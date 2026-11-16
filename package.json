@@ -1,0 +1,23 @@
+{
+  "name": "petlove",
+  "version": "1.0.0",
+  "private": true,
+  "description": "PetLove: app React Native (front-end) + API Node.js (back-end) + banco SQLite",
+  "engines": { "node": ">=22.5" },
+  "scripts": {
+    "instalar": "npm install && npm install --prefix backend && npm install --prefix app",
+    "start": "concurrently -k -n API,APP -c magenta,cyan \"npm start --prefix backend\" \"npm start --prefix app\"",
+    "web": "concurrently -k -n API,WEB -c magenta,cyan \"npm start --prefix backend\" \"npm run web --prefix app\"",
+    "api": "npm start --prefix backend",
+    "app": "npm start --prefix app",
+    "banco:recriar": "npm run seed --prefix backend",
+    "banco:ver": "npm run sql --prefix backend",
+    "exportar": "npm run exportar --prefix backend",
+    "test": "npm test --prefix backend",
+    "test:e2e": "npm run test:e2e --prefix app",
+    "typecheck": "npm run typecheck --prefix app"
+  },
+  "devDependencies": {
+    "concurrently": "^9.2.0"
+  }
+}

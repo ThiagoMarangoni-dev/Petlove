@@ -1,0 +1,29 @@
+{
+  "name": "petlove-api",
+  "version": "1.0.0",
+  "description": "API REST do app Petlove (PI IV - Senac): CRUD, sincronização e exportação JSON",
+  "type": "module",
+  "main": "src/server.js",
+  "engines": {
+    "node": ">=22.5"
+  },
+  "scripts": {
+    "start": "node --no-warnings src/server.js",
+    "dev": "node --no-warnings --watch src/server.js",
+    "seed": "node --no-warnings scripts/seed.js",
+    "exportar": "node --no-warnings scripts/exportar-json.js",
+    "test": "node --no-warnings --test --test-concurrency=1 \"test/**/*.test.js\"",
+    "test:unit": "node --no-warnings --test \"test/unit/*.test.js\"",
+    "test:integracao": "node --no-warnings --test \"test/integracao/*.test.js\"",
+    "test:e2e": "node --no-warnings --test \"test/e2e/*.test.js\"",
+    "test:cobertura": "node --no-warnings --test --experimental-test-coverage --test-concurrency=1 \"test/**/*.test.js\"",
+    "sql": "node --no-warnings scripts/sql.js"
+  },
+  "dependencies": {
+    "cors": "^2.8.5",
+    "express": "^5.1.0"
+  },
+  "devDependencies": {
+    "supertest": "^7.1.0"
+  }
+}

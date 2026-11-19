@@ -1,5 +1,6 @@
 import express from 'express';
 import cors from 'cors';
+import { fileURLToPath } from 'node:url';
 import { ErroApi, invalido } from './erros.js';
 import { criarServicoProdutos } from './servicos/produtos.js';
 import { criarServicoPedidos } from './servicos/pedidos.js';
@@ -7,6 +8,20 @@ import { criarServicoPreferencias } from './servicos/preferencias.js';
 import { criarServicoSincronizacao } from './servicos/sincronizacao.js';
 import { criarServicoExportacao } from './servicos/exportacao.js';
 import { criarBuscaCep } from './integracao/viacep.js';
+
+/** Troca "imagem": "/imagens/x.png" por "http://host/imagens/x.png" em qualquer nível do JSON. */
+function completarImagens(valor, base) {
+  if (Array.isArray(valor)) return valor.map((v) => completarImagens(v, base));
+  if (valor && typeof valor === 'object') {
+    const novo = {};
+    for (const [chave, v] of Object.entries(valor)) {
+      novo[chave] =
+        chave === 'imagem' && typeof v === 'string' && v.startsWith('/imagens/') ? base + v : completarImagens(v, base);
+    }
+    return novo;
+  }
+  return valor;
+}
 
 const idDaRota = (req) => {
   const id = Number(req.params.id);
@@ -28,6 +43,17 @@ export function criarApp({ db, buscarCep = criarBuscaCep() }) {
   const app = express();
   app.use(cors());
   app.use(express.json({ limit: '200kb' }));
+
+  // Imagens dos produtos e das telas: http://<servidor>:3333/imagens/<arquivo>.png
+  app.use('/imagens', express.static(fileURLToPath(new URL('../public/imagens', import.meta.url)), { maxAge: '1d' }));
+
+  // O banco guarda o caminho ("/imagens/cama.png"); a resposta leva o endereço completo,
+  // com o mesmo host que o celular usou para chamar a API.
+  app.use((req, res, next) => {
+    const json = res.json.bind(res);
+    res.json = (corpo) => json(completarImagens(corpo, `${req.protocol}://${req.get('host')}`));
+    next();
+  });
 
   app.get('/api/saude', (_req, res) => res.json({ status: 'ok', servidorEm: new Date().toISOString() }));
 

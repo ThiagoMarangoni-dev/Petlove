@@ -211,6 +211,32 @@ describe('Sincronização', () => {
   });
 });
 
+describe('Imagens', () => {
+  it('produtos voltam com o endereço completo da imagem, no host chamado', async () => {
+    const r = await request(app).get('/api/produtos/1').set('Host', '192.168.0.10:3333').expect(200);
+    assert.equal(r.body.imagem, 'http://192.168.0.10:3333/imagens/biscoitos.png');
+  });
+
+  it('a API serve o arquivo da imagem', async () => {
+    const r = await request(app).get('/imagens/cama.png').expect(200);
+    assert.equal(r.headers['content-type'], 'image/png');
+  });
+
+  it('itens de pedido também levam o endereço completo', async () => {
+    const r = await request(app).post('/api/pedidos').send({ itens: [{ produtoId: 2, quantidade: 1 }] }).expect(201);
+    assert.match(r.body.itens[0].imagem, /^http:\/\/127\.0\.0\.1:\d+\/imagens\/varinha\.png$/);
+  });
+
+  it('bancos antigos com links do Figma são corrigidos ao abrir', async () => {
+    db.prepare("UPDATE produtos SET imagem = 'https://www.figma.com/api/mcp/asset/2733c08c-5ec4-40b8-bae1-cb2aa03a8eae.png' WHERE id = 3").run();
+    // a mesma migração roda sempre que a API abre o banco
+    const { migrarImagens } = await import('../../src/db.js');
+    migrarImagens(db);
+    const r = await request(app).get('/api/produtos/3').expect(200);
+    assert.match(r.body.imagem, /\/imagens\/cama\.png$/);
+  });
+});
+
 describe('CEP e exportação', () => {
   it('GET /api/cep/:cep devolve o endereço', async () => {
     const r = await request(app).get('/api/cep/01310100').expect(200);

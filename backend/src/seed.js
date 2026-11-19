@@ -1,5 +1,6 @@
 // Dados iniciais: os 4 produtos do protótipo + histórico de pedidos para o dashboard.
-const IMG = 'https://www.figma.com/api/mcp/asset/';
+// Imagens ficam em backend/public/imagens e são servidas pela API em /imagens.
+const IMG = '/imagens/';
 
 export const PRODUTOS_INICIAIS = [
   {
@@ -9,7 +10,7 @@ export const PRODUTOS_INICIAIS = [
     preco: 12.99,
     avaliacao: 4.9,
     numAvaliacoes: 120,
-    imagem: IMG + 'ddd39f46-b284-42c4-b247-8d20286dc763.png',
+    imagem: IMG + 'biscoitos.png',
     estoque: 300,
   },
   {
@@ -19,7 +20,7 @@ export const PRODUTOS_INICIAIS = [
     preco: 8.5,
     avaliacao: 4.8,
     numAvaliacoes: 85,
-    imagem: IMG + 'e9d54f02-1d4e-4911-bcec-db47c0fea05c.png',
+    imagem: IMG + 'varinha.png',
     estoque: 300,
   },
   {
@@ -29,7 +30,7 @@ export const PRODUTOS_INICIAIS = [
     preco: 45,
     avaliacao: 5,
     numAvaliacoes: 210,
-    imagem: IMG + '2733c08c-5ec4-40b8-bae1-cb2aa03a8eae.png',
+    imagem: IMG + 'cama.png',
     estoque: 250,
   },
   {
@@ -39,7 +40,7 @@ export const PRODUTOS_INICIAIS = [
     preco: 22,
     avaliacao: 4.7,
     numAvaliacoes: 46,
-    imagem: IMG + 'c3853d95-15bf-4eda-8ea0-b0bc5e5140b7.png',
+    imagem: IMG + 'comedouro.png',
     estoque: 200,
   },
 ];
